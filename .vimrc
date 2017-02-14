@@ -35,15 +35,15 @@ Plugin 'edkolev/tmuxline.vim'
 Plugin 'itchyny/lightline.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'bling/vim-bufferline'
+"Plugin 'bling/vim-bufferline'
 Plugin 'ervandew/supertab'
 " Plugin 'YankRing.vim'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'vimwiki'
 Plugin 'shougo/neocomplete.vim'
-
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tpope/vim-surround'
 " Optional:
 Plugin 'honza/vim-snippets'
 
@@ -113,7 +113,7 @@ nnoremap L gt
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-""""""""""""" My cscope/vim key mappings
+"""""""""""" My cscope/vim key mappings
 "
 " The following maps all invoke one of the following cscope search types:
 "
@@ -265,10 +265,10 @@ let Tlist_Auto_Update = 1
 let Tlist_Highlight_Tag_On_BufEnter = 1
 
 " Bufferline
-let g:bufferline_echo = 1
-let g:bufferline_modified = '+'
-let g:bufferline_inactive_highlight = 'StatusLineNC'
-let g:bufferline_active_highlight = 'StatusLine'
+"let g:bufferline_echo = 1
+"let g:bufferline_modified = '+'
+"let g:bufferline_inactive_highlight = 'StatusLineNC'
+"let g:bufferline_active_highlight = 'StatusLine'
 
 " incsearch settings
 map /  <Plug>(incsearch-forward)
