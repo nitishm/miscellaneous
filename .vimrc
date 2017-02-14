@@ -31,7 +31,7 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'edkolev/tmuxline.vim'
-"Plugin 'scrooloose/sytastic'
+"Plugin 'scrooloose/syntastic'
 Plugin 'itchyny/lightline.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'terryma/vim-multiple-cursors'
@@ -40,15 +40,18 @@ Plugin 'ervandew/supertab'
 " Plugin 'YankRing.vim'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'vimwiki'
+Plugin 'shougo/neocomplete.vim'
 
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 " Optional:
 Plugin 'honza/vim-snippets'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+call vundle#end()                        " required
+filetype plugin indent on                " required
 
-" Vim environment options
+                                         " Vim environment options
 syntax on
 set nowrap
 set mouse=a
@@ -60,28 +63,56 @@ set visualbell
 set noerrorbells
 set encoding=utf-8
 
-" Anya vimrc settings 
-set nocompatible	" Use Vim defaults (much better!)
-set bs=2		" allow backspacing over everything in insert mode
-set ai			" always set autoindenting on
+set nocompatible                         " Use Vim defaults (much better!)
+set backspace=indent,eol,start           " allow backspacing over everything in insert mode
+set autoindent                           " always set autoindenting on
+set copyindent                           " copy the previous indentation on autoindenting
 set nobackup
-set viminfo='20,\"50	" read/write a .viminfo file, don't store more
-			" than 50 lines of registers
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set smartindent
-set ic                  " case insensitive search
+set history=50                           " keep 50 lines of command line history
+set ruler                                " show the cursor position all the time
+set ignorecase                           " ignore case when searching
+set smartcase                            " ignore case if search pattern is all lowercase,
+                                         " case-sensitive otherwise
 set path=$PWD/**
 set ttyfast
+set hidden
+set shiftround                           " use multiple of shiftwidth when indenting with '<' and '>'
 
+set history=1000                         " remember more commands and search history
+set undolevels=1000                      " use many muchos levels of undo
+set wildignore=*.swp,*.bak,*.pyc,*.class
+set title                                " change the terminal's title
+set visualbell                           " don't beep
+set noerrorbells                         " don't beep
+set nobackup
+set noswapfile
+
+set list
+set listchars=tab:>.,trail:.,extends:#,nbsp:.
+
+set pastetoggle=<F9>
 """""""""""""" Mappings
 map <F2> :TlistToggle<CR>
 map <F3> :!/opt/rational/clearcase/bin/cleartool diff -pred -opt -b -g % &<CR>
 map <F4> :!/opt/rational/clearcase/bin/cleartool co -nc % &<CR>
 map <F5> :NERDTreeToggle<CR>
-map <F7> :mksession! ~/vim_session <cr> " Quick write session with F7
-map <F8> :source ~/vim_session <cr>     " And load session with F8
+map <F6> :mksession! ~/vim_session <cr> " Quick write session with F7
+map <F7> :source ~/vim_session <cr>     " And load session with F8
+nmap <F8> :!find . -iname '*.c' -o -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' > cscope.files<CR> :!cscope -b -i cscope.files -f cscope.out<CR> :cs reset<CR>
 
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+nnoremap <Space>w :w<CR>
+
+nnoremap ; :
+nnoremap H gT
+nnoremap L gt
+
+" Vim airline tmuxline settings
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
 """"""""""""" My cscope/vim key mappings
 "
 " The following maps all invoke one of the following cscope search types:
@@ -211,10 +242,16 @@ endif
 
 set tags=$CC_BASE/tags
 
+" Neovim
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+
 " Ctrlp settings
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_max_files=0
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 
 " Tagbar settings
 let g:tagbar_ctags_bin = '/usr/bin/ctags'
@@ -229,6 +266,9 @@ let Tlist_Highlight_Tag_On_BufEnter = 1
 
 " Bufferline
 let g:bufferline_echo = 1
+let g:bufferline_modified = '+'
+let g:bufferline_inactive_highlight = 'StatusLineNC'
+let g:bufferline_active_highlight = 'StatusLine'
 
 " incsearch settings
 map /  <Plug>(incsearch-forward)
@@ -289,3 +329,13 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:nerdtree_tabs_open_on_console_startup=1
 let g:NERDTreeDirArrows=0
 
+" vp doesn't replace paste buffer
+function! RestoreRegister()
+    let @" = s:restore_reg
+    return ''
+endfunction
+function! s:Repl()
+    let s:restore_reg = @"
+    return "p@=RestoreRegister()\<cr>"
+endfunction
+vmap <silent> <expr> p <sid>Repl()
